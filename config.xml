@@ -5,7 +5,7 @@
     <description>SSM-26 SAFE SENDER MESSENGER</description>
     <author email="contato@fabricadeplugins.com.br" href="https://fabricadeplugins.tec.br/">Fabrica de Plugins</author>
     
-    <content src="www/index.html" />
+    <content src="index.html" />
     
     <access origin="*" />
     <allow-intent href="http://*/*" />
