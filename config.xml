@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.fabricadeplugins.ssm26" version="0.0.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.fabricadeplugins.ssm26" version="0.0.3" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     
     <name>SSM26</name>
     <description>SSM-26 SAFE SENDER MESSENGER</description>
@@ -25,11 +25,24 @@
         <preference name="android-targetSdkVersion" value="34" />
         
         <icon density="ldpi" height="36" src="www/assets/images/icones/36.png" width="36" />
+        <icon density="ldpi" height="40" src="www/assets/images/icones/40.png" width="40" />
         <icon density="mdpi" height="57" src="www/assets/images/icones/57.png" width="57" />
+        <icon density="mdpi" height="64" src="www/assets/images/icones/64.png" width="64" />
         <icon density="hdpi" height="72" src="www/assets/images/icones/72.png" width="72" />
-        <icon density="xhdpi" height="96" src="www/assets/images/icones/96.png" width="96" />
+        <icon density="xhdpi" height="114" src="www/assets/images/icones/114.png" width="114" />
+        <icon density="xhdpi" height="120" src="www/assets/images/icones/120.png" width="120" />
         <icon density="xxhdpi" height="144" src="www/assets/images/icones/144.png" width="144" />
+        <icon density="xxhdpi" height="152" src="www/assets/images/icones/152.png" width="152" />
+        <icon density="xxhdpi" height="173" src="www/assets/images/icones/173.png" width="173" />
+        <icon density="xhdpi" height="96" src="www/assets/images/icones/96.png" width="96" />
+        <icon density="xxhdpi" height="180" src="www/assets/images/icones/180.png" width="180" />
         <icon density="xxxhdpi" height="192" src="www/assets/images/icones/192.png" width="192" />
+        <icon density="xxxhdpi" height="225" src="www/assets/images/icones/225.png" width="225" />
+        <icon density="xxxhdpi" height="320" src="www/assets/images/icones/320.png" width="320" />
+        <icon density="xxxhdpi" height="512" src="www/assets/images/icones/512.png" width="512" />
+        <icon density="xxxhdpi" height="768" src="www/assets/images/icones/768.png" width="768" />
+        <icon density="xxxhdpi" height="960" src="www/assets/images/icones/960.png" width="960" />
+        <icon density="xxxhdpi" height="1024" src="www/assets/images/icones/1024x1024.png" width="1024" />
     </platform>
 
     <platform name="ios">
@@ -41,24 +54,25 @@
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
 
-        <icon height="20" src="www/assets/images/icones/20.png" width="20" />
-        <icon height="29" src="www/assets/images/icones/29.png" width="29" />
-        <icon height="40" src="www/assets/images/icones/40.png" width="40" />
-        <icon height="50" src="www/assets/images/icones/50.png" width="50" />
-        <icon height="57" src="www/assets/images/icones/57.png" width="57" />
-        <icon height="58" src="www/assets/images/icones/58.png" width="58" />
-        <icon height="60" src="www/assets/images/icones/60.png" width="60" />
-        <icon height="72" src="www/assets/images/icones/72.png" width="72" />
-        <icon height="76" src="www/assets/images/icones/76.png" width="76" />
-        <icon height="80" src="www/assets/images/icones/80.png" width="80" />
-        <icon height="87" src="www/assets/images/icones/87.png" width="87" />
-        <icon height="100" src="www/assets/images/icones/100.png" width="100" />
-        <icon height="114" src="www/assets/images/icones/114.png" width="114" />
-        <icon height="120" src="www/assets/images/icones/120.png" width="120" />
-        <icon height="144" src="www/assets/images/icones/144.png" width="144" />
-        <icon height="152" src="www/assets/images/icones/152.png" width="152" />
-        <icon height="167" src="www/assets/images/icones/167.png" width="167" />
-        <icon height="1024" src="www/assets/images/icones/1024x1024.png" width="1024" />
+        <icon density="ldpi" height="36" src="www/assets/images/icones/36.png" width="36" />
+        <icon density="ldpi" height="40" src="www/assets/images/icones/40.png" width="40" />
+        <icon density="mdpi" height="57" src="www/assets/images/icones/57.png" width="57" />
+        <icon density="mdpi" height="64" src="www/assets/images/icones/64.png" width="64" />
+        <icon density="hdpi" height="72" src="www/assets/images/icones/72.png" width="72" />
+        <icon density="xhdpi" height="114" src="www/assets/images/icones/114.png" width="114" />
+        <icon density="xhdpi" height="120" src="www/assets/images/icones/120.png" width="120" />
+        <icon density="xxhdpi" height="144" src="www/assets/images/icones/144.png" width="144" />
+        <icon density="xxhdpi" height="152" src="www/assets/images/icones/152.png" width="152" />
+        <icon density="xxhdpi" height="173" src="www/assets/images/icones/173.png" width="173" />
+        <icon density="xhdpi" height="96" src="www/assets/images/icones/96.png" width="96" />
+        <icon density="xxhdpi" height="180" src="www/assets/images/icones/180.png" width="180" />
+        <icon density="xxxhdpi" height="192" src="www/assets/images/icones/192.png" width="192" />
+        <icon density="xxxhdpi" height="225" src="www/assets/images/icones/225.png" width="225" />
+        <icon density="xxxhdpi" height="320" src="www/assets/images/icones/320.png" width="320" />
+        <icon density="xxxhdpi" height="512" src="www/assets/images/icones/512.png" width="512" />
+        <icon density="xxxhdpi" height="768" src="www/assets/images/icones/768.png" width="768" />
+        <icon density="xxxhdpi" height="960" src="www/assets/images/icones/960.png" width="960" />
+        <icon density="xxxhdpi" height="1024" src="www/assets/images/icones/1024x1024.png" width="1024" />
     </platform>
 
     <plugin name="cordova-plugin-ionic-webview" spec="^5.0.0" />
