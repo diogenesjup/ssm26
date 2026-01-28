@@ -1,0 +1,37 @@
+{
+  "name": "com.fabricadeplugins.ssm26",
+  "version": "1.0.0",
+  "description": "SSM-26 SAFE SENDER MESSENGER",
+  "main": "index.html",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diogenesjup/ssm26.git"
+  },
+  "keywords": [
+    "ssm26"
+  ],
+  "author": "Fabrica de Plugins",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diogenesjup/ssm26/issues"
+  },
+  "homepage": "https://github.com/diogenesjup/ssm26#readme",
+  "devDependencies": {
+    "cordova-android": "^13.0.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android",
+      "ios"
+    ],
+    "plugins": {
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-ionic-webview": {}
+    }
+  }
+}

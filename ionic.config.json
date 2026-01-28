@@ -1,0 +1,7 @@
+{
+  "name": "com.fabricadeplugins.ssm26",
+  "type": "custom",
+  "integrations": {
+    "cordova": {}
+  }
+}

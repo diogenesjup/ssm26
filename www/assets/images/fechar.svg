@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="26" height="26" viewBox="0 0 26 26">
+  <defs>
+    <clipPath id="clip-path">
+      <rect width="26" height="26" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="No" clip-path="url(#clip-path)">
+    <rect id="Retângulo_1445" data-name="Retângulo 1445" width="26" height="26" fill="none"/>
+    <path id="União_3" data-name="União 3" d="M12.778,15.1,2.323,25.556,0,23.232,10.454,12.778,0,2.323,2.323,0,12.778,10.454,23.232,0l2.324,2.323L15.1,12.778,25.556,23.232l-2.324,2.324Z" fill="#0091eb"/>
+  </g>
+</svg>
