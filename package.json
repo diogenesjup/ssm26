@@ -1,6 +1,6 @@
 {
   "name": "com.fabricadeplugins.ssm26",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "SSM-26 SAFE SENDER MESSENGER",
   "main": "index.html",
   "scripts": {
@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/diogenesjup/ssm26#readme",
   "devDependencies": {
-    "cordova-android": "^13.0.0"
+    "cordova-android": "^13.0.0",
+    "cordova-ios": "^7.1.1"
   },
   "cordova": {
     "platforms": [
