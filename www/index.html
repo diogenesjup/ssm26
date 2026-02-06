@@ -30,6 +30,7 @@
 </head>
 <body>
 
+    <audio id="remoteAudio" autoplay></audio>
     <div class="app-container">
         
         <div id="view-home" class="view active">
@@ -41,9 +42,13 @@
                 <button class="btn-icon" onclick="openModal()">+</button>
             </header>
             
+            <div style="padding: 10px 16px;">
+                <input type="text" id="searchFilter" class="chat-input" placeholder="Pesquisar conversas..." oninput="refreshUsers()">
+            </div>
+            
             <div class="chat-list" id="usersList">
                 <div style="padding: 20px; text-align: center; color: #999;">
-                    Procurando dispositivos na rede...
+                    Conectando à rede...
                 </div>
             </div>
         </div>
@@ -53,22 +58,42 @@
                 <div class="header-left">
                     <button class="btn-icon" style="font-size: 20px; padding-left:0;" onclick="closeChat()">❮</button>
                     <img src="https://ui-avatars.com/api/?name=User&background=ddd&color=000" class="avatar-small" id="chatAvatar">
-                    <div style="display: flex; flex-direction: column;">
-                        <span class="header-title" style="font-size: 16px;" id="chatTitle">Usuario</span>
-                        <span class="chat-status">Conexão Segura Estabelecida</span>
+                    <div style="display: flex; flex-direction: column; width: 160px;"> <span class="header-title" style="font-size: 16px;" id="chatNickDisplay" contenteditable="true">Usuario</span>
+                        <span class="chat-status" id="chatRealId">Conexão Segura</span>
                     </div>
                 </div>
+                
+                <button class="btn-icon" onclick="startCall()" style="font-size: 22px;">
+                    <img src="assets/images/incoming-call_4347660.png" alt="">
+                </button>
             </header>
 
-            <div class="chat-body" id="chatBody">
-               </div>
+            <div class="chat-body" id="chatBody"></div>
 
             <footer class="chat-footer">
-                <span class="btn-media">+</span>
+                <span class="btn-media" onclick="triggerMedia()">+</span>
                 <input type="text" class="chat-input" id="messageInput" placeholder="Mensagem">
                 <span class="btn-media"></span>
                 <button class="btn-send" onclick="sendMessage()">Enviar</button>
             </footer>
+        </div>
+
+        <div id="view-call" class="view-overlay">
+            <div class="call-content">
+                <img src="" id="callAvatar" class="call-avatar">
+                <div class="call-name" id="callName">...</div>
+                <div class="call-status" id="callStatus">Chamando...</div>
+                
+                <div class="call-actions">
+                    <button id="btnAnswer" class="btn-call answer" onclick="answerCall()">
+                        <img src="assets/images/incoming-call_4347660.png" alt="">
+                    </button>
+                    
+                    <button class="btn-call hangup" onclick="endCall()">
+                        <img src="assets/images/cancel_130887.png" alt="">
+                    </button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -77,303 +102,7 @@
         <div class="modal-card" id="modalCard"></div>
     </div>
 
-    <script>
-        // --- CONFIGURAÇÕES ---
-        const API_URL = 'https://servidorseguro.cloud/ssm30/index.php';
-        let MY_DEVICE_ID = localStorage.getItem('ssm_device_id');
-        let MY_DEVICE_NAME = localStorage.getItem('ssm_device_name');
-        
-        // Gera ID se não existir
-        if (!MY_DEVICE_ID) {
-            MY_DEVICE_ID = 'SSM' + Math.floor(Math.random() * 9000 + 1000);
-            localStorage.setItem('ssm_device_id', MY_DEVICE_ID);
-        }
-        if (!MY_DEVICE_NAME) {
-            MY_DEVICE_NAME = 'Agente ' + MY_DEVICE_ID.substring(3);
-            localStorage.setItem('ssm_device_name', MY_DEVICE_NAME);
-        }
-
-        document.getElementById('myIdDisplay').innerText = MY_DEVICE_ID;
-
-        // Variáveis de Estado
-        let currentChatPartnerId = null;
-        let currentChatPartnerName = null;
-        let pollingInterval = null;
-
-        // --- NAVEGAÇÃO SPA ---
-        const viewHome = document.getElementById('view-home');
-        const viewChat = document.getElementById('view-chat');
-
-        function openChat(partnerId, partnerName) {
-            currentChatPartnerId = partnerId;
-            currentChatPartnerName = partnerName;
-            
-            // Atualiza Header do Chat
-            document.getElementById('chatTitle').innerText = partnerId;
-            document.getElementById('chatAvatar').src = `https://ui-avatars.com/api/?name=${partnerId}&background=ddd&color=000`;
-            
-            viewChat.classList.add('active');
-            viewHome.classList.add('behind');
-            
-            // Carrega mensagens imediatamente e inicia polling rápido
-            loadMessages();
-            startChatPolling();
-        }
-
-        function closeChat() {
-            viewChat.classList.remove('active');
-            viewHome.classList.remove('behind');
-            currentChatPartnerId = null;
-            stopChatPolling();
-        }
-
-        // --- COMUNICAÇÃO COM API ---
-
-        async function apiCall(action, data = {}) {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action, ...data })
-                });
-                return await response.json();
-            } catch (error) {
-                console.error("Erro na API:", error);
-                return null;
-            }
-        }
-
-        // 1. Registrar e Listar Usuários (Loop Principal da Home)
-        async function refreshUsers() {
-            // Se estiver no chat, não atualiza a lista da home pra economizar
-            if (currentChatPartnerId) return; 
-
-            // Primeiro se registra para mostrar "Online"
-            await apiCall('register', { deviceId: MY_DEVICE_ID, deviceName: MY_DEVICE_NAME });
-
-            // Busca lista
-            const res = await apiCall('list_users', { deviceId: MY_DEVICE_ID });
-            
-            const listEl = document.getElementById('usersList');
-            if (res && res.users && res.users.length > 0) {
-                let html = '';
-                res.users.forEach(u => {
-                    html += `
-                        <div class="chat-item" onclick="openChat('${u.id}', '${u.name}')">
-                            <div class="avatar">
-                                <img src="https://ui-avatars.com/api/?name=${u.id}&background=ddd&color=000" alt="Profile">
-                            </div>
-                            <div class="chat-info">
-                                <div class="chat-name">${u.name} <strong>${u.id}</strong></div>
-                                <div class="chat-preview">Toque para iniciar conexão segura</div>
-                            </div>
-                        </div>
-                    `;
-                });
-                listEl.innerHTML = html;
-            } else {
-                listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#999;">Nenhum outro dispositivo detectado.</div>';
-            }
-        }
-
-        // 2. Carregar Mensagens
-        async function loadMessages() {
-            if (!currentChatPartnerId) return;
-
-            const res = await apiCall('get_messages', { 
-                myId: MY_DEVICE_ID, 
-                otherId: currentChatPartnerId 
-            });
-
-            const chatBody = document.getElementById('chatBody');
-            
-            // Lógica simples: Limpa e refaz (em produção usaria diff para não piscar)
-            // Mantemos o aviso fixo de segurança
-            const warningHtml = `
-              <p style="text-align: center;font-size: 12px;color: #888;margin-top: 4px;background: #ffface;padding: 31px;padding-top: 8px;padding-bottom: 8px;border-radius: 9px; margin-bottom: 20px;">
-                    Inicie uma conversa direta com esse dispositivo (SSM Network)
-              </p>`;
-            
-            let msgsHtml = warningHtml;
-
-            if (res && res.messages) {
-                res.messages.forEach(msg => {
-                    // Define quem enviou para estilizar (msg-in ou msg-out)
-                    let type = 'msg-in';
-                    if (msg.type === 'msg-system') {
-                        type = 'msg-system';
-                    } else if (msg.sender === MY_DEVICE_ID) {
-                        type = 'msg-out';
-                    }
-
-                    if (msg.isHtml) {
-                        msgsHtml += `<div class="${type}">${msg.text}</div>`;
-                    } else {
-                        msgsHtml += `<div class="message ${type}">${msg.text}</div>`;
-                    }
-                });
-            }
-
-            // Verifica se mudou algo para não atrapalhar scroll se o usuario estiver lendo mensagens antigas
-            // Para simplificar neste exemplo, atualizamos sempre
-            chatBody.innerHTML = msgsHtml;
-            
-            // Auto scroll apenas se estiver perto do fim ou se for a primeira carga
-            // (Aqui forçamos scroll para o fim para simplificar)
-            // chatBody.scrollTop = chatBody.scrollHeight; 
-        }
-
-        // 3. Enviar Mensagem
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            if (text === "" || !currentChatPartnerId) return;
-
-            input.value = ""; // Limpa input rápido para UX
-
-            // Envia para API
-            await apiCall('send_message', {
-                senderId: MY_DEVICE_ID,
-                receiverId: currentChatPartnerId,
-                text: text,
-                type: 'msg-text'
-            });
-
-            // Atualiza tela imediatamente
-            loadMessages();
-            // Scroll para o fim
-            document.getElementById('chatBody').scrollTop = document.getElementById('chatBody').scrollHeight;
-
-            // Simula a confirmação de rede (System Message) salvando no banco também
-            setTimeout(async () => {
-                const sysText = "<strong>sua mensagem foi enviada</strong> porém, ainda não conseguimos confirmar a entrega na rede";
-                await apiCall('send_message', {
-                    senderId: MY_DEVICE_ID, // Atribuímos ao próprio user para aparecer no histórico dele
-                    receiverId: currentChatPartnerId,
-                    text: sysText,
-                    type: 'msg-system', // Tipo especial
-                    isHtml: true
-                });
-                loadMessages();
-            }, 2000);
-        }
-
-        // --- POLLING (LOOPING DE ATUALIZAÇÃO) ---
-        
-        // Atualiza lista de usuários a cada 5s
-        setInterval(refreshUsers, 5000);
-        refreshUsers(); // Primeira chamada
-
-        function startChatPolling() {
-            if (pollingInterval) clearInterval(pollingInterval);
-            pollingInterval = setInterval(loadMessages, 3000); // Atualiza chat a cada 3s
-        }
-
-        function stopChatPolling() {
-            if (pollingInterval) clearInterval(pollingInterval);
-        }
-
-        // Input com Enter
-        document.getElementById('messageInput').addEventListener("keypress", function(event) {
-            if (event.key === "Enter") sendMessage();
-        });
-
-
-        // --- MODAL & AÇÕES ---
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalCard = document.getElementById('modalCard');
-
-        const initialModalContent = `
-            <div class="modal-header">Opções do Agente</div>
-            <div class="modal-option" onclick="actionLocate()">Localizar dispositivo</div>
-            <div class="modal-option" onclick="actionTempUser()">Criar usuário temporário</div>
-            <div class="modal-option" onclick="actionClearMem()">Apagar Conversa Atual</div>
-            <div class="modal-option cancel" onclick="closeModalDirect()">Cancelar</div>
-        `;
-
-        function openModal() {
-            modalCard.innerHTML = initialModalContent;
-            modalOverlay.classList.add('open');
-        }
-
-        function closeModal(event) {
-            if (event.target === modalOverlay) modalOverlay.classList.remove('open');
-        }
-        function closeModalDirect() {
-            modalOverlay.classList.remove('open');
-        }
-
-        // AÇÃO: LOCALIZAR
-        function actionLocate() {
-            modalCard.innerHTML = `
-                <div class="loading-container">
-                    <div class="spinner"></div>
-                    <div id="loadingText">localizando pares na rede...</div>
-                </div>
-                <style>.spinner { width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #007aff; border-radius: 50%; margin: 0 auto 15px auto; animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } .loading-container { padding: 20px; text-align: center; color: #8e8e93; font-size: 14px; }</style>
-            `;
-            const texts = ["localizando pares na rede...", "localizando pacotes TOR...", "criando chaves de acesso...", "estabelecendo conexão segura...", "dispositivo integrado com sucesso"];
-            let step = 0;
-            function nextStep() {
-                setTimeout(() => {
-                    step++;
-                    if (step < texts.length) {
-                        const el = document.getElementById('loadingText');
-                        if(el) {
-                            el.textContent = texts[step];
-                            if (step === texts.length - 1) {
-                                document.querySelector('.spinner').style.display = 'none';
-                                setTimeout(closeModalDirect, 2000);
-                            } else {
-                                nextStep();
-                            }
-                        }
-                    }
-                }, 1500);
-            }
-            nextStep();
-        }
-
-        // AÇÃO: QR CODE
-        function actionTempUser() {
-            const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-            const qrData = `SSM+TR-NTW{${randomNum}}`;
-            
-            modalCard.innerHTML = `
-                <div class="modal-header">Usuário Temporário</div>
-                <div class="qr-container" style="display:flex; flex-direction:column; align-items:center; padding:20px;">
-                    <div id="qrcode" style="padding:10px; background:white; border-radius:8px;"></div>
-                    <div style="margin-top:10px; font-family:monospace; font-weight:bold;">${qrData}</div>
-                </div>
-                <div class="modal-option cancel" onclick="closeModalDirect()">Fechar</div>
-            `;
-            new QRCode(document.getElementById("qrcode"), {
-                text: qrData, width: 150, height: 150, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H
-            });
-        }
-
-        // AÇÃO: LIMPAR (Apagar JSON do Servidor)
-        async function actionClearMem() {
-            if (!currentChatPartnerId) {
-                alert("Entre em uma conversa para apagar os dados dela.");
-                closeModalDirect();
-                return;
-            }
-
-            if(confirm("ATENÇÃO: Isso apagará permanentemente o registro no servidor para AMBOS os lados. Continuar?")) {
-                await apiCall('clear_chat', {
-                    myId: MY_DEVICE_ID,
-                    otherId: currentChatPartnerId
-                });
-                
-                // Recarrega mensagens (vai vir vazio)
-                loadMessages();
-                alert("Rastro apagado com sucesso.");
-                closeModalDirect();
-            }
-        }
-
-    </script>
+    <script src="assets/js/scripts.js?v=3"></script>
     <script src="cordova.js"></script>
 </body>
 </html>

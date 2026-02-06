@@ -374,15 +374,186 @@
 
 
         /* Estilo da mensagem do sistema centralizada */
-.msg-system {
-    align-self: center;
-    background-color: var(--bg-message-sys);
-    color: var(--text-sys);
-    font-size: 13px;
-    text-align: center;
-    max-width: 90%;
-    border-radius: 8px;
-    padding: 8px 12px;
-    border: 1px solid rgba(0,0,0,0.05);
-    margin: 5px 0;
-}
+        .msg-system {
+            align-self: center;
+            background-color: var(--bg-message-sys);
+            color: var(--text-sys);
+            font-size: 13px;
+            text-align: center;
+            max-width: 90%;
+            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            margin: 5px 0;
+        }
+
+        .msg-system-2{
+                text-align: center;
+                font-size: 10px;
+                color: #888;
+                margin-bottom: 20px;
+                background: #f5e872;
+                padding: 12px;
+                padding-top: 9px;
+                width: 286px;
+                border-radius: 12px;
+                margin-left: auto;
+                margin-right: auto;
+        }
+
+        /* Imagens no chat */
+        .chat-img {
+            max-width: 100%;
+            border-radius: 10px;
+            display: block;
+            margin: 5px 0;
+            /* Impede seleção e "arrastar" a imagem */
+            user-select: none;
+            -webkit-user-drag: none;
+            pointer-events: none; /* Isso impede o clique direto, mas cuidado se quiser zoom */
+        }
+
+        /* Permitir pointer events se quiser que o usuário apenas veja, 
+        mas o oncontextmenu no JS já mata o "Salvar como" no mobile */
+        .msg-out img, .msg-in img {
+            pointer-events: auto;
+        }
+
+        /* Ajuste no botão media para parecer clicável */
+        .btn-media {
+            cursor: pointer !important;
+            opacity: 1 !important;
+        }
+
+
+
+        .msg-system {
+            align-self: center;
+            background-color: #fff4ce;
+            color: #665c38;
+            font-size: 13px;
+            text-align: center;
+            max-width: 90%;
+            border-radius: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            margin: 5px 0;
+        }
+        .chat-status {
+            font-size: 11px;
+            color: #25d366;
+            margin-top: 2px;
+        }
+        /* Visual indicativo de edição */
+        [contenteditable="true"]:focus {
+            outline: none;
+            border-bottom: 1px dashed #007aff;
+            background-color: rgba(0,0,0,0.05);
+        }
+        .secret-badge {
+            background-color: #000;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+
+        #searchFilter{
+            width: 100%;
+        }
+
+
+
+
+        /* --- TELA DE CHAMADA --- */
+        .view-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1c1c1e, #2c2c2e); /* Fundo escuro */
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+            visibility: hidden;
+        }
+
+        .view-overlay.active {
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .call-content {
+            text-align: center;
+            color: white;
+            width: 100%;
+        }
+
+        .call-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        .call-name { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+        .call-status { font-size: 16px; color: #ccc; margin-bottom: 60px; }
+
+        .call-actions {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .btn-call {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            font-size: 0; /* Ícone via background ou unicode ajustado */
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-call.hangup { background-color: #ff3b30; color: white; }
+        .btn-call.answer { background-color: #30d158; color: white; display: none; } /* Oculto por padrão */
+
+        .btn-icon img{
+                    width: 24px;
+                    height: auto;
+                    opacity: 0.5;
+                    margin-right: -7px;
+        }
+
+        .btn-call.answer img{
+            filter: grayscale(100%);
+            width: 24px;
+            height: auto;
+        }
+
+        .btn-call.hangup img{
+            filter: grayscale(100%);
+            width: 24px;
+            height: auto;
+        }
