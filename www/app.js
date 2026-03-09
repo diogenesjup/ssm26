@@ -1,6 +1,6 @@
 var app = new App(1, 
-				 "SAVE SERVIÇO", 
-				 "1.2.5", 
+				 "SSM26", 
+				 "0.0.7", 
 				 "HIBRIDO",
 				 "HOMOLOGACAO",
 				 "F9803B518FD8E8E0CD0E7E51F164B7463BDFBC5337DB8603A7B78FFAD76FDFA8",

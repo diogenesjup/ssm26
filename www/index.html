@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SSM30</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- ICONES -->
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="assets/css/style.ssm.css?v=3">
     <style>
         /* Estilos críticos inline caso o CSS externo demore ou para garantir overrides específicos */
@@ -71,7 +73,9 @@
             <div class="chat-body" id="chatBody"></div>
 
             <footer class="chat-footer">
-                <span class="btn-media" onclick="triggerMedia()">+</span>
+                <span class="btn-media" onclick="triggerMedia()" style="color:#666;">
+                    <i class="fa fa-paperclip" style="color:#666;"></i>
+                </span>
                 <input type="text" class="chat-input" id="messageInput" placeholder="Mensagem">
                 <span class="btn-media"></span>
                 <button class="btn-send" onclick="sendMessage()">Enviar</button>
@@ -88,6 +92,10 @@
                     <button id="btnAnswer" class="btn-call answer" onclick="answerCall()">
                         <img src="assets/images/incoming-call_4347660.png" alt="">
                     </button>
+
+                    <button id="btnAudioToggle" class="btn-call" onclick="toggleAudio()" style="display: none; background-color: #555; color: white; font-size: 22px;">
+                        <span id="audioToggleIcon">🔊</span>
+                    </button>
                     
                     <button class="btn-call hangup" onclick="endCall()">
                         <img src="assets/images/cancel_130887.png" alt="">
@@ -100,6 +108,17 @@
 
     <div id="modalOverlay" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-card" id="modalCard"></div>
+    </div>
+
+    <div id="iosConfirmModal" class="ios-modal-overlay">
+        <div class="ios-modal">
+            <div class="ios-modal-title" id="iosModalTitle">Título</div>
+            <div class="ios-modal-text" id="iosModalText">Texto da mensagem.</div>
+            <div class="ios-modal-actions">
+                <button class="ios-modal-btn cancel" onclick="closeIosModal()">Cancelar</button>
+                <button class="ios-modal-btn confirm" id="iosModalConfirmBtn" onclick="executeIosAction()">Confirmar</button>
+            </div>
+        </div>
     </div>
 
     <script src="assets/js/scripts.js?v=3"></script>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.fabricadeplugins.ssm26" version="0.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+<widget id="com.fabricadeplugins.ssm26" version="0.0.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     
     <name>SSM26</name>
     <description>SSM-26 SAFE SENDER MESSENGER</description>
@@ -62,6 +62,8 @@
         <plugin name="cordova-plugin-statusbar" />
         <preference name="StatusBarBackgroundColor" value="#b4b4b4" />
 
+        <plugin name="cordova-plugin-audiotoggle" />
+
         <plugin name="cordova-plugin-whitelist" version="1.3.4"  />
         <access origin="*" />
         <allow-navigation href="*" />
@@ -108,6 +110,7 @@
         <plugin name="cordova-plugin-ionic-webview" spec="^5.0.0" />
         <plugin name="cordova-plugin-whitelist" spec="^1.3.4" />
         <plugin name="cordova-plugin-statusbar" spec="^2.4.3" />
+        <plugin name="cordova-plugin-audiotoggle" />
     </platform>
 
 </widget>

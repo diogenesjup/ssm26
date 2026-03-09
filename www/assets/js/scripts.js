@@ -181,13 +181,15 @@ async function refreshUsers() {
                 const identityToUse = u.myIdentityInThisChat || MY_DEVICE_ID;
 
                 html += `
-                <div class="chat-item" onclick="openChat('${u.id}', '${identityToUse}')">
-                    <div class="avatar"><img src="https://ui-avatars.com/api/?name=${u.id}&background=ddd&color=000"></div>
-                    <div class="chat-info">
+                <div class="chat-item">
+                    <div class="avatar" onclick="openChat('${u.id}', '${identityToUse}')"><img src="https://ui-avatars.com/api/?name=${u.id}&background=ddd&color=000"></div>
+                    <div class="chat-info" onclick="openChat('${u.id}', '${identityToUse}')">
                         <div class="chat-name">${displayName}</div>
                         <div class="chat-preview">${badge} ${statusText}</div>
                     </div>
+                    <span class="delete-chat-dots" onclick="promptDeleteChat('${u.id}', '${identityToUse}', event)">&#8942;</span>
                 </div>`;
+
             });
             listEl.innerHTML = html;
         } else {
@@ -437,6 +439,13 @@ async function answerCall() {
 
 // 4. Encerrar Chamada
 async function endCall() {
+
+    // --- NOVO: Reseta a UI e o áudio ---
+    document.getElementById('btnAudioToggle').style.display = 'none';
+    isSpeakerphone = true;
+    if (window.AudioToggle) AudioToggle.setAudioMode(AudioToggle.SPEAKER);
+    // -----------------------------------
+    
     isCallActive = false;
     stopSignalPolling();
 
@@ -479,11 +488,15 @@ function createPeerConnection() {
     };
 
     // Quando receber áudio remoto
+    // Quando receber áudio remoto
     peerConnection.ontrack = (event) => {
         const remoteAudio = document.getElementById('remoteAudio');
         if (remoteAudio.srcObject !== event.streams[0]) {
             remoteAudio.srcObject = event.streams[0];
             document.getElementById('callStatus').innerText = "Chamada em andamento";
+            
+            // Exibe o botão de alternar áudio
+            document.getElementById('btnAudioToggle').style.display = 'flex';
         }
     };
 
@@ -571,7 +584,7 @@ function openModal() {
         <div class="modal-header">Opções do Agente</div>
         <div class="modal-option" onclick="actionLocate()">Localizar dispositivo</div>
         <div class="modal-option" onclick="actionTempUser()">Criar usuário temporário</div>
-        <div class="modal-option" onclick="actionClearMem()">Apagar Conversa Atual</div>
+        <div class="modal-option" onclick="actionClearAllChats()">Apagar todas as conversas</div>
         <div class="modal-option cancel" onclick="closeModalDirect()">Cancelar</div>`;
     modalOverlay.classList.add('open');
 }
@@ -634,14 +647,76 @@ async function actionTempUser() {
     new QRCode(document.getElementById("qrcode"), { text: MY_TEMP_ID, width: 150, height: 150 });
 }
 
-async function actionClearMem() {
-    if (!currentChatPartnerId) return closeModalDirect();
-    if(confirm("Isso apagará o histórico no servidor para AMBOS. Confirmar?")) {
-        await apiCall('clear_chat', { myId: myActiveIdentity, otherId: currentChatPartnerId });
-        loadMessages();
-        closeModalDirect();
+
+
+
+// --- CONTROLE CENTRAL DO MODAL IOS ---
+let pendingIosAction = null;
+
+function openIosModal(title, text, actionCallback) {
+    document.getElementById('iosModalTitle').innerText = title;
+    document.getElementById('iosModalText').innerText = text;
+    pendingIosAction = actionCallback;
+    
+    // Adiciona a classe para ativar a transição suave
+    document.getElementById('iosConfirmModal').classList.add('active');
+}
+
+function closeIosModal() {
+    // Remove a classe para esconder suavemente
+    document.getElementById('iosConfirmModal').classList.remove('active');
+    
+    // Aguarda o tempo da animação (250ms) antes de limpar a ação pendente
+    setTimeout(() => {
+        pendingIosAction = null;
+    }, 250);
+}
+
+function executeIosAction() {
+    if (pendingIosAction) {
+        pendingIosAction(); // Executa a função que foi passada
     }
 }
+
+// --- APAGAR CHAT ÚNICO (TRÊS BOLINHAS) ---
+window.promptDeleteChat = function(otherId, myId, event) {
+    if (event) event.stopPropagation(); // Evita conflitos de clique
+    
+    openIosModal(
+        "Deseja apagar essa conversa?", 
+        "Essa ação não pode ser desfeita.", 
+        async function() {
+            closeIosModal();
+            // Avisa o servidor para apagar
+            await apiCall('clear_chat', { myId: myId, otherId: otherId });
+            refreshUsers();
+        }
+    );
+};
+
+// --- APAGAR TODAS AS CONVERSAS (MENU PRINCIPAL) ---
+window.actionClearAllChats = function() {
+    closeModalDirect(); // Fecha aquele menu que sobe da tela inicial
+    
+    openIosModal(
+        "Apagar todas as conversas?", 
+        "Essa ação apagará todo o histórico de todos os seus contatos. Isso não pode ser desfeito.", 
+        async function() {
+            closeIosModal();
+            
+            // Reúne todos os IDs deste aparelho (Principal e Temporário)
+            const myIdentities = [MY_DEVICE_ID];
+            if(MY_TEMP_ID) myIdentities.push(MY_TEMP_ID);
+            
+            // Avisa o servidor para limpar tudo
+            await apiCall('clear_all_chats', { deviceIds: myIdentities });
+            refreshUsers();
+        }
+    );
+};
+
+
+
 
 // --- INICIALIZAÇÃO E EVENTOS GLOBAIS ---
 

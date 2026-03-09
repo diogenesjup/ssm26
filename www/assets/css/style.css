@@ -2719,3 +2719,69 @@ p.apoio-servico{
         text-align: center;
         color: #666;
       }
+
+
+
+
+
+
+
+      .ios-modal-overlay {
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.5); display: none;
+          align-items: center; justify-content: center; z-index: 10000;
+      }
+      .ios-modal {
+          background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+          border-radius: 14px; width: 270px; text-align: center; overflow: hidden; 
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+      .ios-modal-title { padding: 20px 15px 5px; font-weight: 600; font-size: 17px; }
+      .ios-modal-text { padding: 0 15px 20px; font-size: 13px; color: #666; }
+      .ios-modal-actions { display: flex; border-top: 1px solid rgba(0,0,0,0.1); }
+      .ios-modal-btn {
+          flex: 1; padding: 15px; border: none; background: transparent;
+          font-size: 17px; color: #007aff; cursor: pointer; outline: none;
+      }
+      .ios-modal-btn.cancel { border-right: 1px solid rgba(0,0,0,0.1); font-weight: normal; }
+      .ios-modal-btn.confirm { font-weight: 600; color: #ff3b30; }
+
+      /* Estilo para as três bolinhas no item do chat */
+      .delete-chat-dots {
+          float: right; font-size: 20px; color: #999; 
+          padding: 0 10px; cursor: pointer; line-height: 1;
+      }
+
+
+/* Modal iOS */
+.ios-modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); display: none;
+    align-items: center; justify-content: center; z-index: 10000;
+}
+.ios-modal {
+    background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+    border-radius: 14px; width: 270px; text-align: center; overflow: hidden; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.ios-modal-title { padding: 20px 15px 5px; font-weight: 600; font-size: 17px; }
+.ios-modal-text { padding: 0 15px 20px; font-size: 13px; color: #666; }
+.ios-modal-actions { display: flex; border-top: 1px solid rgba(0,0,0,0.1); }
+.ios-modal-btn {
+    flex: 1; padding: 15px; border: none; background: transparent;
+    font-size: 17px; color: #007aff; cursor: pointer; outline: none;
+}
+.ios-modal-btn.cancel { border-right: 1px solid rgba(0,0,0,0.1); font-weight: normal; }
+.ios-modal-btn.confirm { font-weight: 600; color: #ff3b30; }
+
+/* Três bolinhas */
+.delete-chat-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #999;
+    padding: 10px 15px; /* Área de clique maior */
+    cursor: pointer;
+    z-index: 10;
+}
