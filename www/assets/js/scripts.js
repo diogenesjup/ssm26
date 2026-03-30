@@ -311,8 +311,7 @@ function triggerMedia() {
 // --- MÓDULO DA CÂMERA (TOTALMENTE INDEPENDENTE) ---
 // ============================================================================
 
-// 1. Função auxiliar para converter o Base64 da câmera em um Arquivo (Blob/File)
-// Isso é necessário porque o PHP espera receber um arquivo via FormData
+// Função auxiliar para converter o Base64 da câmera em um Arquivo (Blob/File)
 function b64toBlobCamera(b64Data, contentType='', sliceSize=512) {
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
@@ -328,10 +327,11 @@ function b64toBlobCamera(b64Data, contentType='', sliceSize=512) {
     return new Blob(byteArrays, {type: contentType});
 }
 
-// 2. Iniciar a Câmera e criar a interface dos botões
+// Iniciar a Câmera e criar a interface
 function iniciarCamera() {
-    if (!window.CameraPreview) {
-        alert("O plugin da câmera não está disponível neste dispositivo.");
+    // Verificação mais robusta: checa se a variável global do plugin existe
+    if (typeof CameraPreview === 'undefined') {
+        alert("O plugin da câmera não está disponível. Você está testando no navegador ou o app não terminou de carregar?");
         return;
     }
 
@@ -359,8 +359,8 @@ function iniciarCamera() {
         document.body.appendChild(cameraUi);
     }
     cameraUi.style.display = 'flex';
- 
-    // Inicia o plugin da câmera
+
+    // Inicia o plugin da câmera (igual ao seu app antigo)
     CameraPreview.startCamera({
         x: 0, y: 0, 
         width: window.screen.width, 
@@ -372,9 +372,11 @@ function iniciarCamera() {
     });
 }
 
-// 3. Fechar a câmera sem tirar foto
+// Fechar a câmera sem tirar foto
 function fecharCamera() {
-    CameraPreview.stopCamera();
+    if (typeof CameraPreview !== 'undefined') {
+        CameraPreview.stopCamera();
+    }
     const cameraUi = document.getElementById('ssm-camera-ui');
     if (cameraUi) cameraUi.style.display = 'none';
     
@@ -384,18 +386,20 @@ function fecharCamera() {
     document.documentElement.style.backgroundColor = '';
 }
 
-// 4. Tirar a foto e enviar pro chat (Lógica de upload independente)
+// Tirar a foto e enviar pro chat
 function baterFotoEEnviar() {
+    if (typeof CameraPreview === 'undefined') return;
+
     CameraPreview.takePicture({width: 800, height: 800, quality: 70}, async function(base64Data) {
         
-        // Fecha a interface da câmera imediatamente para o usuário voltar pro chat
+        // Fecha a interface da câmera imediatamente
         fecharCamera();
 
         // Converte o Base64 em Arquivo
         const blob = b64toBlobCamera(base64Data, 'image/jpeg');
         const file = new File([blob], "camera_" + Date.now() + ".jpg", { type: "image/jpeg" });
 
-        // --- INÍCIO DA LÓGICA DE UPLOAD (Idêntica à triggerMedia) ---
+        // --- LÓGICA DE UPLOAD ---
         const tempMsg = document.createElement('div');
         tempMsg.className = 'msg-system';
         tempMsg.innerText = "Enviando foto...";
@@ -431,13 +435,8 @@ function baterFotoEEnviar() {
             alert("Erro de conexão ao enviar a foto da câmera.");
             if(tempMsg) tempMsg.remove();
         }
-        // --- FIM DA LÓGICA DE UPLOAD ---
     });
 }
-
-
-
-
 
 
 

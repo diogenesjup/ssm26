@@ -20,6 +20,9 @@
     <preference name="StatusBarOverlaysWebView" value="false" />
     <preference name="StatusBarBackgroundColor" value="#b4b4b4" />
 
+    <plugin name="cordova-plugin-qrscanner" />  
+    <plugin name="cordova-plugin-camera-preview" spec="https://github.com/diogenesjup/diogenes-camera-preview.git" />
+
     <platform name="android">
 
         <config-file parent="/*" target="AndroidManifest.xml">
@@ -74,10 +77,6 @@
         <allow-intent href="sms:*" />
         <allow-intent href="mailto:*" />
         <allow-intent href="geo:*" />
-        
-
-        <plugin name="cordova-plugin-qrscanner" />  
-        <plugin name="cordova-plugin-camera-preview" spec="https://github.com/diogenesjup/diogenes-camera-preview.git" />
 
     </platform>
 
