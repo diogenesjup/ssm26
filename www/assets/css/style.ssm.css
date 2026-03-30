@@ -225,6 +225,7 @@
             color: var(--text-primary);
             font-size: 15px;
             outline: none;
+            padding-right: 75px;
         }
 
         .btn-send {
@@ -234,6 +235,10 @@
             border: none;
             background: none;
             cursor: pointer;
+            position: absolute;
+            right: 54px;
+            bottom: 22px;
+            z-index: 999;
         }
         
         .btn-media {
@@ -663,3 +668,61 @@
 }
 
 /* O resto do CSS (title, text, actions, btn, dots) continua exatamente igual */
+
+
+
+
+
+
+
+
+
+
+
+
+/*---------------------------------
+  TAKE A PICTURE
+-----------------------------------*/
+
+.take-a-picture{
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 98px;
+  background: rgba(000,000,000,0.50);
+  text-align: center;
+  z-index: 9999;
+  -webkit-transition: all 1200ms ease;
+  -moz-transition: all 1200ms ease;
+  transition: all 1200ms ease;
+  left: 0;
+  bottom: -1000%;
+  color: #fff;
+  line-height: 30px;
+}
+
+.take-a-picture a{
+  text-decoration: none;
+}
+
+.take-a-picture a.sair{
+  font-size: 13px !important;
+  color: #fff !important;
+}
+
+.take-a-picture img{
+  width: 72px;
+  margin-top: -20px;
+  background: #5689E3;
+  border-radius: 100%;
+  opacity: 0.99;
+}
+
+.img-nova{
+    width: 23px !important;
+    margin-top: 0 !important;
+    border-radius: 0px !important;
+    background: none !important;
+    margin-right: 10px !important;
+}
+
