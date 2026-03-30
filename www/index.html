@@ -2,12 +2,13 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SSM30</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+    
+    <title>SSM26</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- ICONES -->
     <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/style.ssm.css?v=3">
+    <link rel="stylesheet" href="assets/css/style.ssm.css?v=0.0.12">
     <style>
         /* Estilos críticos inline caso o CSS externo demore ou para garantir overrides específicos */
         .msg-system {
@@ -53,6 +54,7 @@
                     Conectando à rede...
                 </div>
             </div>
+            <p style="position: relative;padding: 12px;font-size:13px;opacity: 0.60;">Versão 0.0.12</p>
         </div>
 
         <div id="view-chat" class="view">
@@ -60,7 +62,8 @@
                 <div class="header-left">
                     <button class="btn-icon" style="font-size: 20px; padding-left:0;" onclick="closeChat()">❮</button>
                     <img src="https://ui-avatars.com/api/?name=User&background=ddd&color=000" class="avatar-small" id="chatAvatar">
-                    <div style="display: flex; flex-direction: column; width: 160px;"> <span class="header-title" style="font-size: 16px;" id="chatNickDisplay" contenteditable="true">Usuario</span>
+                    <!--<div style="display: flex; flex-direction: column; width: 160px;">-->
+                        <div style="display: flex; flex-direction: column; flex: 1; min-width: 0; margin-left: 8px;"> <span class="header-title" style="font-size: 16px;" id="chatNickDisplay" contenteditable="true">Usuario</span>
                         <span class="chat-status" id="chatRealId">Conexão Segura</span>
                     </div>
                 </div>
@@ -75,6 +78,9 @@
             <footer class="chat-footer">
                 <span class="btn-media" onclick="triggerMedia()" style="color:#666;">
                     <i class="fa fa-paperclip" style="color:#666;"></i>
+                </span>
+                <span class="btn-media" onclick="iniciarCamera()" style="color:#666;opacity: 0.55;">
+                    <i class="fa fa-camera" style="color:#666;"></i>
                 </span>
                 <input type="text" class="chat-input" id="messageInput" placeholder="Mensagem">
                 <span class="btn-media"></span>

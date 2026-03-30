@@ -301,6 +301,183 @@ function triggerMedia() {
     input.click();
 }
 
+
+
+
+
+
+
+// ============================================================================
+// --- MÓDULO DA CÂMERA (TOTALMENTE INDEPENDENTE) ---
+// ============================================================================
+
+// 1. Função auxiliar para converter o Base64 da câmera em um Arquivo (Blob/File)
+// Isso é necessário porque o PHP espera receber um arquivo via FormData
+function b64toBlobCamera(b64Data, contentType='', sliceSize=512) {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+    return new Blob(byteArrays, {type: contentType});
+}
+
+// 2. Iniciar a Câmera e criar a interface dos botões
+function iniciarCamera() {
+    if (!window.CameraPreview) {
+        alert("O plugin da câmera não está disponível neste dispositivo.");
+        return;
+    }
+
+    // Oculta o app principal e deixa o fundo transparente para ver a câmera
+    document.querySelector('.app-container').style.display = 'none';
+    document.body.style.backgroundColor = 'transparent';
+    document.documentElement.style.backgroundColor = 'transparent';
+
+    // Cria a UI dos botões da câmera dinamicamente
+    let cameraUi = document.getElementById('ssm-camera-ui');
+    if (!cameraUi) {
+        cameraUi = document.createElement('div');
+        cameraUi.id = 'ssm-camera-ui';
+        cameraUi.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:transparent; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:40px;';
+        
+        cameraUi.innerHTML = `
+            <div style="display:flex; justify-content:space-around; align-items:center; width:100%; padding: 0 20px;">
+                <button onclick="fecharCamera()" style="background:#ff3b30; color:#fff; border:none; padding:12px 20px; border-radius:30px; font-size:15px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">Cancelar</button>
+                
+                <button onclick="baterFotoEEnviar()" style="background:#fff; border:6px solid #ddd; width:75px; height:75px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.5);"></button>
+                
+                <button onclick="CameraPreview.switchCamera()" style="background:#333; color:#fff; border:none; width:55px; height:55px; border-radius:50%; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"><i class="fa fa-refresh"></i></button>
+            </div>
+        `;
+        document.body.appendChild(cameraUi);
+    }
+    cameraUi.style.display = 'flex';
+ 
+    // Inicia o plugin da câmera
+    CameraPreview.startCamera({
+        x: 0, y: 0, 
+        width: window.screen.width, 
+        height: window.screen.height, 
+        camera: "back", 
+        tapPhoto: false, 
+        previewDrag: false, 
+        toBack: true // Joga a câmera para o fundo
+    });
+}
+
+// 3. Fechar a câmera sem tirar foto
+function fecharCamera() {
+    CameraPreview.stopCamera();
+    const cameraUi = document.getElementById('ssm-camera-ui');
+    if (cameraUi) cameraUi.style.display = 'none';
+    
+    // Restaura o layout do app
+    document.querySelector('.app-container').style.display = 'block';
+    document.body.style.backgroundColor = '';
+    document.documentElement.style.backgroundColor = '';
+}
+
+// 4. Tirar a foto e enviar pro chat (Lógica de upload independente)
+function baterFotoEEnviar() {
+    CameraPreview.takePicture({width: 800, height: 800, quality: 70}, async function(base64Data) {
+        
+        // Fecha a interface da câmera imediatamente para o usuário voltar pro chat
+        fecharCamera();
+
+        // Converte o Base64 em Arquivo
+        const blob = b64toBlobCamera(base64Data, 'image/jpeg');
+        const file = new File([blob], "camera_" + Date.now() + ".jpg", { type: "image/jpeg" });
+
+        // --- INÍCIO DA LÓGICA DE UPLOAD (Idêntica à triggerMedia) ---
+        const tempMsg = document.createElement('div');
+        tempMsg.className = 'msg-system';
+        tempMsg.innerText = "Enviando foto...";
+        chatBody.appendChild(tempMsg);
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        const formData = new FormData();
+        formData.append('action', 'upload_media'); 
+        formData.append('image', file);
+
+        try {
+            const response = await fetch(API_URL, { 
+                method: 'POST', 
+                body: formData 
+            });
+            
+            const res = await response.json();
+            tempMsg.remove();
+
+            if (res.status === 'success') {
+                await apiCall('send_message', {
+                    senderId: myActiveIdentity,
+                    receiverId: currentChatPartnerId,
+                    text: `<img src="${res.url}" class="chat-img" oncontextmenu="return false;">`,
+                    isHtml: true
+                });
+                loadMessages();
+            } else {
+                alert("Erro no upload da foto: " + (res.msg || "Erro desconhecido")); 
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Erro de conexão ao enviar a foto da câmera.");
+            if(tempMsg) tempMsg.remove();
+        }
+        // --- FIM DA LÓGICA DE UPLOAD ---
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // --- LÓGICA WEBRTC (CHAMADAS DE VOZ) ---
 
 // 1. Iniciar Chamada (Caller)

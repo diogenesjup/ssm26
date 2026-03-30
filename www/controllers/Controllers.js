@@ -12,7 +12,7 @@ class App {
         this.models  = new Models();
         this.helpers = new Helpers();
 
-        this.nomeApp         = "SAVE SERVIÇO";
+        this.nomeApp         = "SSM26";
         this.linkApp         = "https://saveservico.com.br/";
         this.nomeMoeda       = "MOEDA";
         this.nomeMoedaPlural = "MOEDAS";
