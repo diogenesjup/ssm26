@@ -172,6 +172,9 @@ async function refreshUsers() {
                 let badge = "";
                 
                 if (u.myIdentityInThisChat === MY_TEMP_ID) {
+                    if(MY_TEMP_ID==null){
+                        MY_TEMP_ID = "nenhuma mensagem ainda";
+                    }
                     badge = `<span class="secret-badge">SECRETO</span>`;
                     statusText = `Falando com <b>${MY_TEMP_ID}</b>`;
                 } else {
@@ -335,7 +338,7 @@ function b64toBlobCamera(b64Data, contentType='', sliceSize=512) {
 
 // Iniciar a Câmera e criar a interface
 function iniciarCamera() {
-    alert("Oops! Não conseguimos inicializar a camêra nesse momento.");
+    alert("Oops! Não conseguimos inicializar a camêra nesse momento."); return;
     // Esconde o HTML do app e deixa o fundo transparente para a câmera aparecer
     document.querySelector('.app-container').style.display = 'none';
     document.body.style.backgroundColor = 'transparent';
