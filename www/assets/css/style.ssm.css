@@ -223,14 +223,14 @@
             border-radius: 20px;
             padding: 10px 16px;
             color: var(--text-primary);
-            font-size: 15px;
+            font-size: 13px;
             outline: none;
         }
 
         .btn-send {
             color: var(--accent);
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             border: none;
             background: none;
             cursor: pointer;
@@ -239,8 +239,8 @@
         
         .btn-media {
             color: var(--accent);
-            font-size: 24px;
-            padding: 0 5px;
+            font-size: 20px;
+            padding: 0 2px;
             cursor: default;
             opacity: 0.8;
         }
