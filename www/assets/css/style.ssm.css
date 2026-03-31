@@ -225,7 +225,6 @@
             color: var(--text-primary);
             font-size: 15px;
             outline: none;
-            padding-right: 75px;
         }
 
         .btn-send {
@@ -235,10 +234,7 @@
             border: none;
             background: none;
             cursor: pointer;
-            position: absolute;
-            right: 54px;
-            bottom: 22px;
-            z-index: 999;
+           
         }
         
         .btn-media {

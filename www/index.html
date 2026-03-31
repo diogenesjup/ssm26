@@ -68,9 +68,15 @@
                     </div>
                 </div>
                 
-                <button class="btn-icon" onclick="startCall()" style="font-size: 22px;">
-                    <img src="assets/images/incoming-call_4347660.png" alt="">
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="btn-icon" onclick="deleteCurrentChat()" style="font-size: 22px; color: #ff3b30;">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                    
+                    <button class="btn-icon" onclick="startCall()" style="font-size: 22px;">
+                        <img src="assets/images/incoming-call_4347660.png" alt="">
+                    </button>
+                </div>
             </header>
 
             <div class="chat-body" id="chatBody"></div>
@@ -79,11 +85,13 @@
                 <span class="btn-media" onclick="triggerMedia()" style="color:#666;">
                     <i class="fa fa-paperclip" style="color:#666;"></i>
                 </span>
+                <!--
                 <span class="btn-media" onclick="appCamera.takePicture();//iniciarCamera()" style="color: #666;font-size: 18px;margin-top: 9px;display: inline-block;vertical-align: top;">
                     <i class="fa fa-camera" style="color:#666;"></i>
                 </span>
+                -->
                 <input type="text" class="chat-input" id="messageInput" placeholder="Mensagem">
-                <span class="btn-media"></span>
+                <span class="btn-media" onclick="iniciarCamera();"><i class="fa fa-camera" style="color: #666;font-size: 17px;vertical-align: super;margin-top: 13px;"></i></span>
                 <button class="btn-send" onclick="sendMessage()">Enviar</button>
             </footer>
         </div>

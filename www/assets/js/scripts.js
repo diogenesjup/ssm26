@@ -307,11 +307,17 @@ function triggerMedia() {
 
 
 
+
+
+
+
+
+
 // ============================================================================
 // --- MÓDULO DA CÂMERA (TOTALMENTE INDEPENDENTE) ---
 // ============================================================================
 
-// Função auxiliar para converter o Base64 da câmera em um Arquivo (Blob/File)
+// Função auxiliar para transformar o Base64 em Arquivo
 function b64toBlobCamera(b64Data, contentType='', sliceSize=512) {
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
@@ -329,18 +335,12 @@ function b64toBlobCamera(b64Data, contentType='', sliceSize=512) {
 
 // Iniciar a Câmera e criar a interface
 function iniciarCamera() {
-    // Verificação mais robusta: checa se a variável global do plugin existe
-    if (typeof CameraPreview === 'undefined') {
-        alert("O plugin da câmera não está disponível. Você está testando no navegador ou o app não terminou de carregar?");
-        return;
-    }
-
-    // Oculta o app principal e deixa o fundo transparente para ver a câmera
+    // Esconde o HTML do app e deixa o fundo transparente para a câmera aparecer
     document.querySelector('.app-container').style.display = 'none';
     document.body.style.backgroundColor = 'transparent';
     document.documentElement.style.backgroundColor = 'transparent';
 
-    // Cria a UI dos botões da câmera dinamicamente
+    // Monta os botões da câmera (Tirar foto, Cancelar, Virar)
     let cameraUi = document.getElementById('ssm-camera-ui');
     if (!cameraUi) {
         cameraUi = document.createElement('div');
@@ -360,7 +360,7 @@ function iniciarCamera() {
     }
     cameraUi.style.display = 'flex';
 
-    // Inicia o plugin da câmera (igual ao seu app antigo)
+    // Chama o plugin direto, igual ao seu exemplo
     CameraPreview.startCamera({
         x: 0, y: 0, 
         width: window.screen.width, 
@@ -368,15 +368,15 @@ function iniciarCamera() {
         camera: "back", 
         tapPhoto: false, 
         previewDrag: false, 
-        toBack: true // Joga a câmera para o fundo
+        toBack: true
     });
 }
 
 // Fechar a câmera sem tirar foto
 function fecharCamera() {
-    if (typeof CameraPreview !== 'undefined') {
-        CameraPreview.stopCamera();
-    }
+    // Chama o plugin direto para parar
+    CameraPreview.stopCamera();
+    
     const cameraUi = document.getElementById('ssm-camera-ui');
     if (cameraUi) cameraUi.style.display = 'none';
     
@@ -388,18 +388,17 @@ function fecharCamera() {
 
 // Tirar a foto e enviar pro chat
 function baterFotoEEnviar() {
-    if (typeof CameraPreview === 'undefined') return;
-
+    // Chama o plugin direto para tirar a foto
     CameraPreview.takePicture({width: 800, height: 800, quality: 70}, async function(base64Data) {
         
         // Fecha a interface da câmera imediatamente
         fecharCamera();
 
-        // Converte o Base64 em Arquivo
+        // Converte o Base64 em Arquivo (Blob)
         const blob = b64toBlobCamera(base64Data, 'image/jpeg');
         const file = new File([blob], "camera_" + Date.now() + ".jpg", { type: "image/jpeg" });
 
-        // --- LÓGICA DE UPLOAD ---
+        // --- LÓGICA DE UPLOAD (Idêntica ao envio de mídia) ---
         const tempMsg = document.createElement('div');
         tempMsg.className = 'msg-system';
         tempMsg.innerText = "Enviando foto...";
@@ -470,11 +469,29 @@ function baterFotoEEnviar() {
 
 
 
+// --- APAGAR CONVERSA ATUAL DE DENTRO DO CHAT ---
+function deleteCurrentChat() {
+    if (!currentChatPartnerId) return;
 
-
-
-
-
+    openIosModal(
+        "Apagar conversa?", 
+        "Todo o histórico será excluído permanentemente. Essa ação não pode ser desfeita.", 
+        async function() {
+            // Fecha o modal
+            closeIosModal();
+            
+            // Avisa o servidor para apagar o chat entre o seu ID ativo e o parceiro atual
+            await apiCall('clear_chat', { 
+                myId: myActiveIdentity, 
+                otherId: currentChatPartnerId 
+            });
+            
+            // Fecha a janela de chat (voltando para a home) e atualiza a lista
+            closeChat();
+            refreshUsers();
+        }
+    );
+}
 
 
 // --- LÓGICA WEBRTC (CHAMADAS DE VOZ) ---
